@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: fire-alarm-trade
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 60 'wsgi:create_application()'
+    healthCheckPath: /healthz
+    autoDeployTrigger: off
+    disk:
+      name: trade-storage
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.14
+      - key: TRADE_DATA_DIR
+        value: /var/data/trade
+      - key: APP_USERNAME
+        sync: false
+      - key: APP_PASSWORD
+        sync: false
